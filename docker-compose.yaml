@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  jobservice:
+    build: 
+      context: ./back/jobservice
+      dockerfile: ./docker/dev.Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./back/jobservice:/app
+    command: go run .
+    env_file:
+      - ./back/jobservice/.env
+  
+  database:
+    image: postgres:16.2
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: jobservice
+    volumes:
+      - ./back/database:/var/lib/postgresql/data
