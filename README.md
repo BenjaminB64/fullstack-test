@@ -20,3 +20,12 @@ docker compose up
 ```
 
 A database will be created and populated with some data.
+
+# Generate swagger documentation
+You can generate the swagger documentation using the following command:
+
+```bash
+go install github.com/swaggo/swag/cmd/swag@latest
+cd back/jobservice
+swag init -g infrastructure/http_server/http.go -ot json,yaml
+```

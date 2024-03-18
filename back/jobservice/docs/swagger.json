@@ -1,0 +1,482 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This service provides a RESTful API for managing jobs that can be executed asynchronously",
+        "title": "Jobs API Service",
+        "contact": {
+            "name": "BenjaminB64"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/jobs": {
+            "get": {
+                "description": "Get jobs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Get jobs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.JobResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a job",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Create a job",
+                "parameters": [
+                    {
+                        "description": "Create Job Request",
+                        "name": "createJobRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateJobRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Job"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{id}": {
+            "get": {
+                "description": "Get a job by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Get a job by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Job ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.JobResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a job by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Update a job by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Job ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Job Request",
+                        "name": "updateJobRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateJobRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a job by ID",
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Delete a job by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Job ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ApiError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.ChabanDelmasBridgeJobResult": {
+            "type": "object",
+            "properties": {
+                "close_time": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "job_id": {
+                    "type": "integer"
+                },
+                "open_time": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Job": {
+            "type": "object",
+            "properties": {
+                "bridge_status": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ChabanDelmasBridgeJobResult"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/domain.JobStatus"
+                },
+                "task_type": {
+                    "$ref": "#/definitions/domain.JobTaskType"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "weather": {
+                    "$ref": "#/definitions/domain.WeatherJobResult"
+                }
+            }
+        },
+        "domain.JobStatus": {
+            "type": "string",
+            "enum": [
+                "",
+                "pending",
+                "in_progress",
+                "completed",
+                "failed"
+            ],
+            "x-enum-varnames": [
+                "JobStatus_Unknown",
+                "JobStatus_Pending",
+                "JobStatus_InProgress",
+                "JobStatus_Completed",
+                "JobStatus_Failed"
+            ]
+        },
+        "domain.JobTaskType": {
+            "type": "string",
+            "enum": [
+                "",
+                "get_weather",
+                "get_chaban_delmas_bridge_status"
+            ],
+            "x-enum-varnames": [
+                "JobTaskType_Unknown",
+                "JobTaskType_Weather",
+                "JobTaskType_GetChabanDelmasBridgeStatus"
+            ]
+        },
+        "domain.WeatherJobResult": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "jobID": {
+                    "type": "integer"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "relativeHumidity": {
+                    "type": "number"
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "weatherWmoCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dtos.ApiError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/validator.FieldError"
+                    }
+                }
+            }
+        },
+        "dtos.CreateJobRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "taskType"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "slackWebhook": {
+                    "type": "string"
+                },
+                "taskType": {
+                    "$ref": "#/definitions/dtos.TaskType"
+                }
+            }
+        },
+        "dtos.JobResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slackWebhook": {
+                    "type": "string",
+                    "example": "https://hooks.slack.com/services/..."
+                },
+                "status": {
+                    "$ref": "#/definitions/dtos.Status"
+                },
+                "taskType": {
+                    "$ref": "#/definitions/dtos.TaskType"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "dtos.Status": {
+            "type": "string",
+            "enum": [
+                "",
+                "pending",
+                "in_progress",
+                "completed",
+                "failed"
+            ],
+            "x-enum-varnames": [
+                "JobStatus_Unknown",
+                "JobStatus_Pending",
+                "JobStatus_InProgress",
+                "JobStatus_Completed",
+                "JobStatus_Failed"
+            ]
+        },
+        "dtos.TaskType": {
+            "type": "string",
+            "enum": [
+                "",
+                "get_weather",
+                "get_chaban_delmas_bridge_status"
+            ],
+            "x-enum-varnames": [
+                "JobTaskType_Unknown",
+                "JobTaskType_Weather",
+                "JobTaskType_GetChabanDelmasBridgeStatus"
+            ]
+        },
+        "dtos.UpdateJobRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "status",
+                "taskType"
+            ],
+            "properties": {
+                "name": {
+                    "description": "in: body",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "status": {
+                    "$ref": "#/definitions/dtos.Status"
+                },
+                "taskType": {
+                    "$ref": "#/definitions/dtos.TaskType"
+                }
+            }
+        },
+        "validator.FieldError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "field": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

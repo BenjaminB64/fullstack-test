@@ -25,6 +25,13 @@ type HTTPServerInterface interface {
 	Shutdown() error
 }
 
+//	@title			Jobs API Service
+//	@version		1.0
+//	@description	This service provides a RESTful API for managing jobs that can be executed asynchronously
+//	@contact.name	BenjaminB64
+//	@host			localhost:8080
+//	@BasePath		/
+
 func NewHTTPServer(
 	ctx context.Context,
 	logger *logger.Logger,
