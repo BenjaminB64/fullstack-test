@@ -19,6 +19,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: jobservice
+      POSTGRES_DB: job_service
     volumes:
       - ./back/database:/var/lib/postgresql/data
