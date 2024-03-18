@@ -1,3 +1,5 @@
+create schema if not exists public;
+
 create table if not exists jobs (
   id serial primary key,
   name varchar(255) not null,
