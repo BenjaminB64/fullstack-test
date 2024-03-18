@@ -39,7 +39,7 @@ func NewJobHandlers(logger *logger.Logger, jobService domain.JobService, customV
 //	@Accept			json
 //	@Produce		json
 //	@Param			createJobRequest	body		dtos.CreateJobRequest	true	"Create Job Request"
-//	@Success		201					{object}	domain.Job
+//	@Success		201					{object}	dtos.JobResponse
 //	@Failure		400					{object}	dtos.ApiError
 //	@Failure		500					{object}	dtos.ApiError
 //	@Router			/jobs [post]

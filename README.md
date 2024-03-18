@@ -29,3 +29,11 @@ go install github.com/swaggo/swag/cmd/swag@latest
 cd back/jobservice
 swag init -g infrastructure/http_server/http.go -ot json,yaml
 ```
+
+# Generate typescript client from swagger
+You can generate the typescript client using the following command:
+
+```bash
+npm install @openapitools/openapi-generator-cli -g
+openapi-generator-cli generate -g typescript-fetch -i ./back/jobservice/docs/swagger.json -o ./front/src/apiClient --additional-properties=
+```
