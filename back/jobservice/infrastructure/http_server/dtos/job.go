@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+// data transfer objects
+
 type CreateJobRequest struct {
 	TaskType     TaskType `json:"taskType" binding:"required,enum"`
 	Name         string   `json:"name" binding:"required,max=255"`
@@ -19,13 +21,15 @@ type JobResponse struct {
 	TaskType TaskType `json:"taskType"`
 	Status   Status   `json:"status"`
 
-	SlackWebhook null.String `json:"slackWebhook"`
+	SlackWebhook null.String `json:"slackWebhook" swaggertype:"string" example:"https://hooks.slack.com/services/..."`
 
 	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt null.Time `json:"updatedAt"`
+
+	UpdatedAt null.Time `json:"updatedAt" swaggertype:"string" example:"2021-01-01T00:00:00Z"`
 }
 
 type UpdateJobRequest struct {
+	// in: body
 	Name     string   `json:"name" validate:"required,max=255"`
 	TaskType TaskType `json:"taskType" validate:"required,enum"`
 	Status   Status   `json:"status" validate:"required,enum"`
