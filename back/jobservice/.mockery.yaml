@@ -1,0 +1,5 @@
+with-expecter: true
+packages:
+  github.com/BenjaminB64/fullstack-test/back/jobservice/domain:
+    interfaces:
+      JobService: {}

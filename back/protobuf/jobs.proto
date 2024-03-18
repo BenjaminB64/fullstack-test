@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+message JobRequest {
+  string name = 1;
+  JobType type = 2;
+  JobStatus status = 3;
+}
+
+message JobResponse {
+  string name = 1;
+  JobType type = 2;
+}
+
+enum JobType {
+  JOB_TYPE_UNKNOWN = 0;
+  JOB_TYPE_GET_CHABAN_DELMAS_BRIDGE_STATUS = 1;
+  JOB_TYPE_GET_WEATHER = 2;
+}
+
+enum JobStatus {
+  JOB_STATUS_UNKNOWN = 0;
+  JOB_STATUS_PENDING = 1;
+  JOB_STATUS_IN_PROGRESS = 2;
+  JOB_STATUS_COMPLETED = 3;
+  JOB_STATUS_FAILED = 4;
+}
