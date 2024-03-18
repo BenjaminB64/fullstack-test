@@ -11,6 +11,29 @@ export default {
     extend: {},
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [nextui(
+      {
+        layout: {
+            fontSize: {
+                tiny: "0.85rem", // text-tiny
+                small: "0.975rem", // text-small
+                medium: "1.1rem", // text-medium
+                large: "1.225rem", // text-large
+            },
+        },
+        themes: {
+          light: {
+            colors: {
+                primary: '#484EF4',
+            }
+          },
+          dark: {
+            colors: {
+                primary: '#484EF4',
+            }
+          }
+        }
+      }
+  )],
 }
 
