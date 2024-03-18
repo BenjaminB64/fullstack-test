@@ -1,0 +1,7 @@
+POST http://{{host}}/jobs
+Content-Type: application/json
+
+{
+  "name": "My Job",
+  "type": "get_weather"
+}
