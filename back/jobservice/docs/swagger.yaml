@@ -1,92 +1,5 @@
 basePath: /
 definitions:
-  domain.ChabanDelmasBridgeJobResult:
-    properties:
-      close_time:
-        type: string
-      created_at:
-        type: string
-      deleted_at:
-        type: string
-      id:
-        type: integer
-      job_id:
-        type: integer
-      open_time:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  domain.Job:
-    properties:
-      bridge_status:
-        items:
-          $ref: '#/definitions/domain.ChabanDelmasBridgeJobResult'
-        type: array
-      created_at:
-        type: string
-      deleted_at:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      status:
-        $ref: '#/definitions/domain.JobStatus'
-      task_type:
-        $ref: '#/definitions/domain.JobTaskType'
-      updated_at:
-        type: string
-      weather:
-        $ref: '#/definitions/domain.WeatherJobResult'
-    type: object
-  domain.JobStatus:
-    enum:
-    - ""
-    - pending
-    - in_progress
-    - completed
-    - failed
-    type: string
-    x-enum-varnames:
-    - JobStatus_Unknown
-    - JobStatus_Pending
-    - JobStatus_InProgress
-    - JobStatus_Completed
-    - JobStatus_Failed
-  domain.JobTaskType:
-    enum:
-    - ""
-    - get_weather
-    - get_chaban_delmas_bridge_status
-    type: string
-    x-enum-varnames:
-    - JobTaskType_Unknown
-    - JobTaskType_Weather
-    - JobTaskType_GetChabanDelmasBridgeStatus
-  domain.WeatherJobResult:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      id:
-        type: integer
-      jobID:
-        type: integer
-      latitude:
-        type: number
-      longitude:
-        type: number
-      relativeHumidity:
-        type: number
-      temperature:
-        type: number
-      updatedAt:
-        type: string
-      weatherWmoCode:
-        type: integer
-    type: object
   dtos.ApiError:
     properties:
       error:
@@ -221,7 +134,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/domain.Job'
+            $ref: '#/definitions/dtos.JobResponse'
         "400":
           description: Bad Request
           schema:
