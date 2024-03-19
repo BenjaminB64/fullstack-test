@@ -29,7 +29,7 @@ func (s *JobProcessorTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 	s.Require().NotNil(c)
 
-	s.JobProcessor = NewJobProcessor(nil)
+	s.JobProcessor = NewJobProcessor(nil, nil)
 	s.Require().NotNil(s.JobProcessor)
 
 }
