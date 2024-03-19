@@ -1,63 +1,63 @@
 import {Input, Select, SelectItem} from "@nextui-org/react";
-import {useEffect, useMemo, useState} from "react";
-import slackWebhookValidation from "../utils/validateSlackWebhook.tsx";
+import React, {forwardRef, useState} from "react";
+import {TaskType} from "../models/taskType.ts";
 
 interface CreateJobFormProps {
-    onAddJob: () => void;
-
-    apiErrors?: {
-        error?: string;
-        fields?: {
-            name?: string;
-            type?: string;
-            slackWebhook?: string;
-        }
-    }
+    handleSubmit: (
+            name?: string,
+            type?: TaskType,
+            slackWebhook?: string,
+    ) => void;
+    errors?: {
+        name?: string;
+        type?: string;
+        slackWebhook?: string;
+    };
 }
 
-
-const JobForm = ({onAddJob, apiErrors}: CreateJobFormProps) => {
-
+const JobForm = forwardRef<HTMLFormElement, CreateJobFormProps>(({handleSubmit, errors}: CreateJobFormProps, ref ) => {
+    const [ jobName , setJobName ] = useState("");
+    const [ jobType, setJobType ] = useState<TaskType|undefined>();
     const [ slackWebhookValue, setSlackWebhookValue ] = useState("");
-    const [ slackWebhookError, setSlackWebhookError ] = useState("");
 
-    const slackWebhookIsInvalid = useMemo(() => {
-        if (slackWebhookValue === "") {
-            return false;
-        }
-        const isValid = slackWebhookValidation(slackWebhookValue);
-        if (!isValid) {
-            setSlackWebhookError("invalid Slack webhook");
-        } else {
-            setSlackWebhookError("");
-        }
-        return !isValid;
-    }, [slackWebhookValue]);
-    useEffect(() => {
-        if (apiErrors?.fields?.slackWebhook) {
-            setSlackWebhookError(apiErrors.fields.slackWebhook);
-        }
-    }, [apiErrors?.fields?.slackWebhook]);
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        handleSubmit(
+            jobName,
+            jobType,
+            slackWebhookValue,
+        );
+    };
 
     return (
-        <>
-            <form onSubmit={onAddJob}>
-                <Input label={"Job Name"} errorMessage={apiErrors?.fields?.name} className={"mb-2"}/>
+        <form onSubmit={onSubmit} ref={ref}>
+            <Input
+                label={"Job Name"}
+                errorMessage={errors?.name}
+                className={"mb-2"}
+                onChange={(e) => setJobName(e.target.value)}
+                isInvalid={!!errors?.name}
+            />
 
-                <Select label={"Type"} errorMessage={apiErrors?.fields?.type} className={"mb-2"}>
-                    <SelectItem key={"get_weather"}>Get weather</SelectItem>
-                    <SelectItem key={"pont_chaban"}>Get Pont Chaman Delmas closing times</SelectItem>
-                </Select>
+            <Select
+                label={"Type"}
+                errorMessage={errors?.type}
+                className={"mb-2"}
+                onChange={(e) => setJobType(e.target.value as TaskType)}
+                isInvalid={!!errors?.type}
+            >
+                <SelectItem key={TaskType.GetWeather}>Get weather</SelectItem>
+                <SelectItem key={TaskType.GetPontChaban}>Get Pont Chaman Delmas closing times</SelectItem>
+            </Select>
 
-                <Input
-                    label={"Slack channel webhook"}
-                    errorMessage={slackWebhookError}
-                    isInvalid={slackWebhookIsInvalid}
-                    onChange={(e) => setSlackWebhookValue(e.target.value)}
-                />
-            </form>
-        </>
+            <Input
+                label={"Slack channel webhook"}
+                errorMessage={errors?.slackWebhook}
+                isInvalid={!!errors?.slackWebhook}
+                onChange={(e) => setSlackWebhookValue(e.target.value)}
+            />
+        </form>
     )
-};
+});
 
 export default JobForm;

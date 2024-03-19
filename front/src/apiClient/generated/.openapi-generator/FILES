@@ -1,0 +1,12 @@
+apis/JobsApi.ts
+apis/index.ts
+index.ts
+models/DtosApiError.ts
+models/DtosCreateJobRequest.ts
+models/DtosJobResponse.ts
+models/DtosStatus.ts
+models/DtosTaskType.ts
+models/DtosUpdateJobRequest.ts
+models/ValidatorFieldError.ts
+models/index.ts
+runtime.ts
