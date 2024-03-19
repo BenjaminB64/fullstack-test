@@ -1,7 +1,7 @@
 package dtos
 
 import (
-	"github.com/BenjaminB64/fullstack-test/back/jobservice/domain"
+	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/volatiletech/null"
 	"time"
 )
@@ -35,10 +35,10 @@ type UpdateJobRequest struct {
 	Status   Status   `json:"status" validate:"required,enum"`
 }
 
-type TaskType = domain.JobTaskType
-type Status = domain.JobStatus
+type TaskType = commonDomain.JobTaskType
+type Status = commonDomain.JobStatus
 
-func (jr *JobResponse) FromDomain(job *domain.Job) {
+func (jr *JobResponse) FromDomain(job *commonDomain.Job) {
 	if job == nil || jr == nil {
 		return
 	}
@@ -58,7 +58,7 @@ func (jr *JobResponse) FromDomain(job *domain.Job) {
 
 type JobsResponse []*JobResponse
 
-func (jr *JobsResponse) FromDomain(jobs []*domain.Job) {
+func (jr *JobsResponse) FromDomain(jobs []*commonDomain.Job) {
 	if jr == nil {
 		return
 	}

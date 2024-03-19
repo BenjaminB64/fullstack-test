@@ -13,6 +13,10 @@ type Config struct {
 		Verbose slog.Level `koanf:"verbose"`
 		Mode    AppMode    `koanf:"mode"`
 	} `koanf:"app"`
+	JobService struct {
+		Host string `koanf:"host"`
+		Port int    `koanf:"port"`
+	} `koanf:"job_service"`
 }
 
 type AppMode string

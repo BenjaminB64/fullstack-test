@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/domain"
 )
 
@@ -15,20 +16,20 @@ func NewJobService(jobRepository domain.JobRepository) domain.JobService {
 	}
 }
 
-func (s *JobService) CreateJob(ctx context.Context, name string, taskType domain.JobTaskType) (*domain.Job, error) {
+func (s *JobService) CreateJob(ctx context.Context, name string, taskType commonDomain.JobTaskType) (*commonDomain.Job, error) {
 	if !taskType.IsValid() {
 		return nil, domain.ErrJobInvalidTaskType
 	}
-	job := domain.NewJob(name, taskType)
+	job := commonDomain.NewJob(name, taskType)
 
 	return s.jobRepository.Create(ctx, job)
 }
 
-func (s *JobService) ReadJob(ctx context.Context, id int) (*domain.Job, error) {
+func (s *JobService) ReadJob(ctx context.Context, id int) (*commonDomain.Job, error) {
 	return s.jobRepository.Read(ctx, id)
 }
 
-func (s *JobService) UpdateJob(ctx context.Context, job *domain.Job) (*domain.Job, error) {
+func (s *JobService) UpdateJob(ctx context.Context, job *commonDomain.Job) (*commonDomain.Job, error) {
 	if !job.TaskType.IsValid() {
 		return nil, domain.ErrJobInvalidTaskType
 	}
@@ -43,6 +44,10 @@ func (s *JobService) DeleteJob(ctx context.Context, id int) error {
 	return s.jobRepository.Delete(ctx, id)
 }
 
-func (s *JobService) ListJobs(ctx context.Context) ([]*domain.Job, error) {
+func (s *JobService) ListJobs(ctx context.Context) ([]*commonDomain.Job, error) {
 	return s.jobRepository.ReadLastN(ctx, 10)
+}
+
+func (s *JobService) GetJobToProcess(ctx context.Context) ([]*commonDomain.Job, error) {
+	return s.jobRepository.GetJobToProcess(ctx)
 }

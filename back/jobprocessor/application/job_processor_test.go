@@ -12,12 +12,12 @@ import (
 	"time"
 )
 
-type JobServiceTestSuite struct {
+type JobProcessorTestSuite struct {
 	suite.Suite
-	JobService domain.JobService
+	JobProcessor domain.JobProcessor
 }
 
-func (s *JobServiceTestSuite) SetupSuite() {
+func (s *JobProcessorTestSuite) SetupSuite() {
 	_, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
@@ -29,11 +29,11 @@ func (s *JobServiceTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 	s.Require().NotNil(c)
 
-	s.JobService = NewJobService(nil)
-	s.Require().NotNil(s.JobService)
+	s.JobProcessor = NewJobProcessor(nil)
+	s.Require().NotNil(s.JobProcessor)
 
 }
 
-func TestJobServiceSuite(t *testing.T) {
-	suite.Run(t, new(JobServiceTestSuite))
+func TestJobProcessorSuite(t *testing.T) {
+	suite.Run(t, new(JobProcessorTestSuite))
 }

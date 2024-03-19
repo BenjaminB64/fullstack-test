@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/database"
 )
@@ -16,12 +17,12 @@ func NewDBJobRepository(db *database.DB) domain.JobRepository {
 	return &DBJobRepository{db: db}
 }
 
-func (r *DBJobRepository) Create(ctx context.Context, job *domain.Job) (*domain.Job, error) {
+func (r *DBJobRepository) Create(ctx context.Context, job *commonDomain.Job) (*commonDomain.Job, error) {
 	res := r.db.QueryRowContext(ctx, "INSERT INTO jobs (name, task_type, status) VALUES ($1, $2, 'pending') RETURNING *;", job.Name, job.TaskType)
 	if res.Err() != nil {
 		return nil, res.Err()
 	}
-	newJob := &domain.Job{}
+	newJob := &commonDomain.Job{}
 	err := res.Scan(&newJob.ID, &newJob.Name, &newJob.Status, &newJob.TaskType, &newJob.CreatedAt, &newJob.UpdatedAt, &newJob.DeletedAt)
 	if err != nil {
 		return nil, err
@@ -30,8 +31,8 @@ func (r *DBJobRepository) Create(ctx context.Context, job *domain.Job) (*domain.
 	return newJob, nil
 }
 
-func (r *DBJobRepository) Read(ctx context.Context, id int) (*domain.Job, error) {
-	job := &domain.Job{}
+func (r *DBJobRepository) Read(ctx context.Context, id int) (*commonDomain.Job, error) {
+	job := &commonDomain.Job{}
 	err := r.db.QueryRowContext(ctx, `
 		SELECT id, name, task_type, status, created_at, updated_at FROM jobs WHERE id = $1 AND deleted_at IS NULL;
 	`, id).Scan(&job.ID, &job.Name, &job.TaskType, &job.Status, &job.CreatedAt, &job.UpdatedAt)
@@ -44,7 +45,7 @@ func (r *DBJobRepository) Read(ctx context.Context, id int) (*domain.Job, error)
 	return job, nil
 }
 
-func (r *DBJobRepository) Update(ctx context.Context, job *domain.Job) error {
+func (r *DBJobRepository) Update(ctx context.Context, job *commonDomain.Job) error {
 	err := r.db.QueryRowContext(ctx, `
 		UPDATE jobs SET name = $1, task_type = $2, status = $3 WHERE id = $4 AND deleted_at IS NULL RETURNING *;
 	`, job.Name, job.TaskType, job.Status, job.ID).Scan(&job.ID, &job.Name, &job.TaskType, &job.Status, &job.CreatedAt, &job.UpdatedAt, &job.DeletedAt)
@@ -67,7 +68,7 @@ func (r *DBJobRepository) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (r *DBJobRepository) ReadLastN(ctx context.Context, n int) ([]*domain.Job, error) {
+func (r *DBJobRepository) ReadLastN(ctx context.Context, n int) ([]*commonDomain.Job, error) {
 	rows, err := r.db.QueryContext(ctx, `
 		SELECT id, name, task_type, status, created_at, updated_at FROM jobs WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT $1;
 	`, n)
@@ -76,9 +77,30 @@ func (r *DBJobRepository) ReadLastN(ctx context.Context, n int) ([]*domain.Job, 
 	}
 	defer rows.Close()
 
-	jobs := make([]*domain.Job, 0, n)
+	jobs := make([]*commonDomain.Job, 0, n)
 	for rows.Next() {
-		job := &domain.Job{}
+		job := &commonDomain.Job{}
+		err := rows.Scan(&job.ID, &job.Name, &job.TaskType, &job.Status, &job.CreatedAt, &job.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		jobs = append(jobs, job)
+	}
+	return jobs, nil
+}
+
+func (r *DBJobRepository) GetJobToProcess(ctx context.Context) ([]*commonDomain.Job, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT id, name, task_type, status, created_at, updated_at FROM jobs WHERE status = 'pending' AND deleted_at IS NULL;
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	jobs := make([]*commonDomain.Job, 0)
+	for rows.Next() {
+		job := &commonDomain.Job{}
 		err := rows.Scan(&job.ID, &job.Name, &job.TaskType, &job.Status, &job.CreatedAt, &job.UpdatedAt)
 		if err != nil {
 			return nil, err
