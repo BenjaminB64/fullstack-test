@@ -3,8 +3,8 @@ create schema if not exists public;
 create table if not exists jobs (
   id serial primary key,
   name varchar(255) not null,
-  status varchar(15) not null check (status in ('pending', 'in_progress', 'completed', 'failed')) default 'pending',
-  task_type varchar(15) not null check (task_type in ('get_chaban_delmas_bridge_status', 'get_weather')),
+  status varchar(50) not null check (status in ('pending', 'in_progress', 'completed', 'failed')) default 'pending',
+  task_type varchar(50) not null check (task_type in ('get_chaban_delmas_bridge_status', 'get_weather')),
 
   created_at timestamp without time zone not null default current_timestamp,
   updated_at timestamp without time zone null default null,
