@@ -13,10 +13,18 @@ type Logger struct {
 	*slog.Logger
 }
 
-func NewLogger(config *config.Config) (*Logger, error) {
-	h := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: config.App.Verbose,
-	})
+func NewLogger(c *config.Config) (*Logger, error) {
+	var h slog.Handler
+
+	if c.App.Mode == config.AppMode_Production {
+		h = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: c.App.Verbose,
+		})
+	} else {
+		h = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			Level: c.App.Verbose,
+		})
+	}
 
 	l := slog.New(h)
 
