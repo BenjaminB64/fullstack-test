@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {useState} from "react";
 import JobFormModal from "./components/jobFormModal.tsx";
+import JobTable from "./components/jobTable.tsx";
 
 function App() {
     const [ openFormJobModal, setOpenFormJobModal ] = useState(false);
@@ -29,6 +30,10 @@ function App() {
                 </NavbarContent>
             </Navbar>
             <JobFormModal isOpen={openFormJobModal} onOpenChange={setOpenFormJobModal} />
+            <div className="p-4 container mx-auto max-w-screen-lg">
+                <h1 className="text-3xl font-bold">Jobs</h1>
+                <JobTable />
+            </div>
         </>
     )
 }

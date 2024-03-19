@@ -2,6 +2,8 @@ import {Button, Link, Modal, ModalBody, ModalContent, ModalHeader} from "@nextui
 import JobForm from "./jobForm.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
+import {JobFormContainer} from "./jobFormContainer.tsx";
+import {createRef, useRef} from "react";
 
 type JobFormModalProps = {
     isOpen: boolean;
@@ -9,6 +11,7 @@ type JobFormModalProps = {
 }
 
 function JobFormModal ({isOpen, onOpenChange}: JobFormModalProps) {
+    const ref = createRef<HTMLFormElement>();
     return (
         <Modal
             classNames={{
@@ -54,27 +57,17 @@ function JobFormModal ({isOpen, onOpenChange}: JobFormModalProps) {
                             Add Job
                         </div>
                         <div className="ml-auto">
-                            <Button variant="bordered" className="mr-3">
+                            <Button variant="bordered" className="mr-3" onClick={() => onOpenChange(false)}>
                                 Cancel
                             </Button>
-                            <Button color="primary" className={"text-white font-bold"}>
+                            <Button color="primary" className={"text-white font-bold"} onClick={() => ref.current?.requestSubmit()}>
                                 Create
                             </Button>
                         </div>
                     </div>
                 </ModalHeader>
                 <ModalBody>
-                    <JobForm
-                        apiErrors={
-                            {
-                                fields: {
-                                    name: "Name is required",
-                                    type: "Type is required",
-                                    slackWebhook: "Slack webhook is required"
-                                }
-                            }
-                        }
-                        onAddJob={() => onOpenChange(false)} />
+                    <JobFormContainer ref={ref} />
                 </ModalBody>
             </ModalContent>
         </Modal>
