@@ -11,6 +11,15 @@ services:
     command: go run .
     env_file:
       - ./back/jobservice/.env
+  jobprocessor:
+    build:
+      context: ./back/jobprocessor
+      dockerfile: ./docker/dev.Dockerfile
+    volumes:
+      - ./back/jobprocessor:/app
+    command: go run .
+    env_file:
+      - ./back/jobprocessor/.env
   front:
     build:
       context: ./front
