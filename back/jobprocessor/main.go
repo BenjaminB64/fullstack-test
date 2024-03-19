@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/config"
+	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/grpc_client"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/logger"
 	"log"
 	"log/slog"
@@ -39,8 +40,15 @@ func main() {
 		return
 	}
 
+	jobServiceClient, err := grpc_client.NewJobServiceClient(l, c)
+	if err != nil {
+		l.Error("error creating job service client", "error", err)
+		return
+	}
+	jobProcessor := application.NewJobProcessor(jobServiceClient, l)
+
 	var app *application.Application
-	app, err = application.NewApplication(l, c, ctx)
+	app, err = application.NewApplication(l, c, ctx, jobProcessor)
 	if err != nil {
 		l.Error("error creating application", "error", err)
 		return

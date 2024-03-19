@@ -50,5 +50,8 @@ openapi-generator-cli generate -g typescript-fetch -i ./back/jobservice/docs/swa
 You can generate the protobuf go files using the following command:
 
 ```bash
-protoc --proto_path=./back/protobuf --go_out=./back/protobuf/jobs-proto --go_opt=paths=source_relative --go-grpc_out=./back/protobuf/jobs-proto --go-grpc_opt=paths=source_relative jobs.proto
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.33
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3
+
+protoc --proto_path=./back/common/protobuf --go_out=./back/common/protobuf/jobs-proto --go_opt=paths=source_relative --go-grpc_out=./back/common/protobuf/jobs-proto --go-grpc_opt=paths=source_relative jobs.proto
 ```

@@ -16,7 +16,7 @@ type Config struct {
 	JobService struct {
 		Host string `koanf:"host"`
 		Port int    `koanf:"port"`
-	} `koanf:"job_service"`
+	} `koanf:"jobservice"`
 }
 
 type AppMode string

@@ -1,5 +1,7 @@
 package domain
 
+import "context"
+
 type JobProcessor interface {
-	ProcessJobs() error
+	ProcessJobs(ctx context.Context) error
 }
