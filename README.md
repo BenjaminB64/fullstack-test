@@ -45,3 +45,10 @@ You can generate the typescript client using the following command:
 npm install @openapitools/openapi-generator-cli -g
 openapi-generator-cli generate -g typescript-fetch -i ./back/jobservice/docs/swagger.json -o ./front/src/apiClient --additional-properties=
 ```
+
+# Generate protobuf go files
+You can generate the protobuf go files using the following command:
+
+```bash
+protoc --proto_path=./back/protobuf --go_out=./back/protobuf/jobs-proto --go_opt=paths=source_relative --go-grpc_out=./back/protobuf/jobs-proto --go-grpc_opt=paths=source_relative jobs.proto
+```
