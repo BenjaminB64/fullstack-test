@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/config"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/database"
@@ -59,13 +60,13 @@ func (s *JobServiceTestSuite) TestCreateJob() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", domain.JobTaskType_Weather)
+	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
 	s.NoError(err)
 	s.NotNil(job)
 	s.NotEqual(0, job.ID)
 	s.Equal("test", job.Name)
-	s.Equal(domain.JobStatus_Pending, job.Status)
-	s.Equal(domain.JobTaskType_Weather, job.TaskType)
+	s.Equal(commonDomain.JobStatus_Pending, job.Status)
+	s.Equal(commonDomain.JobTaskType_Weather, job.TaskType)
 	s.NotNil(job.CreatedAt)
 	s.Nil(job.UpdatedAt.Ptr())
 	s.Nil(job.DeletedAt.Ptr())
@@ -84,7 +85,7 @@ func (s *JobServiceTestSuite) TestReadJob() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", domain.JobTaskType_Weather)
+	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
 	s.NoError(err)
 	s.NotNil(job)
 
@@ -114,18 +115,18 @@ func (s *JobServiceTestSuite) TestUpdateJob() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", domain.JobTaskType_Weather)
+	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
 	s.NoError(err)
 	s.NotNil(job)
 
-	job.Status = domain.JobStatus_Completed
+	job.Status = commonDomain.JobStatus_Completed
 	_, err = s.JobService.UpdateJob(ctx, job)
 	s.NoError(err)
 
 	readJob, err := s.JobService.ReadJob(ctx, job.ID)
 	s.NoError(err)
 	s.NotNil(readJob)
-	s.Equal(domain.JobStatus_Completed, readJob.Status)
+	s.Equal(commonDomain.JobStatus_Completed, readJob.Status)
 
 }
 
@@ -133,7 +134,7 @@ func (s *JobServiceTestSuite) TestUpdateJobInvalidStatus() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", domain.JobTaskType_Weather)
+	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
 	s.NoError(err)
 	s.NotNil(job)
 
@@ -157,7 +158,7 @@ func (s *JobServiceTestSuite) TestDeleteJob() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", domain.JobTaskType_Weather)
+	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
 	s.NoError(err)
 	s.NotNil(job)
 

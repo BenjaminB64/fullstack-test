@@ -7,17 +7,14 @@ package jobs;
 option go_package = "github.com/BenjaminB64/fullstack-test/back/jobservice/protobuf/jobs-proto";
 
 service JobService {
-  rpc GetJobToProcess(GetJobToProcessRequest) returns (GetJobToProcessResponse) {}
+  rpc GetPendingJobs(GetPendingJobsRequest) returns (GetPendingJobsResponse) {}
   rpc UpdateJobStatus(UpdateJobStatusRequest) returns (UpdateJobStatusResponse) {}
 }
 
-message GetJobToProcessRequest {}
+message GetPendingJobsRequest {}
 
-message GetJobToProcessResponse {
-  int32 id = 1;
-
-  JobType type = 2;
-  Localisation localisation = 3;
+message GetPendingJobsResponse {
+  repeated Job jobs = 1;
 }
 
 message Localisation {
@@ -26,9 +23,7 @@ message Localisation {
 }
 
 message UpdateJobStatusRequest {
-  int32 id = 1;
-  JobStatus status = 2;
-  JobResult result = 3;
+  Job job = 1;
 }
 
 message UpdateJobStatusResponse {}
@@ -47,6 +42,13 @@ message Weather {
 message BridgeStatus {
   google.protobuf.Timestamp closingTime = 1;
   google.protobuf.Timestamp openingTime = 2;
+}
+
+message Job {
+  int32 id = 1;
+  JobType type = 2;
+  JobStatus status = 3;
+  JobResult result = 4;
 }
 
 enum JobType {

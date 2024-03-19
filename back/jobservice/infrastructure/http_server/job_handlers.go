@@ -2,6 +2,7 @@ package http_server
 
 import (
 	"errors"
+	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/http_server/dtos"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/logger"
@@ -64,8 +65,8 @@ func (h *JobHandlers) CreateJob(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, apiError)
 		return
 	}
-	var job *domain.Job
-	job, err = h.jobService.CreateJob(c, createJobRequest.Name, domain.JobTaskType(createJobRequest.TaskType))
+	var job *commonDomain.Job
+	job, err = h.jobService.CreateJob(c, createJobRequest.Name, commonDomain.JobTaskType(createJobRequest.TaskType))
 	if err != nil {
 		h.logger.Error("failed to create job", "error", err)
 		c.JSON(http.StatusInternalServerError, &dtos.ApiError{
@@ -195,7 +196,7 @@ func (h *JobHandlers) UpdateJob(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, apiError)
 		return
 	}
-	job := &domain.Job{}
+	job := &commonDomain.Job{}
 
 	job.ID = updateJobURI.ID
 	job.Name = updateJobRequest.Name

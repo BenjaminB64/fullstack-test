@@ -3,7 +3,7 @@ package http_server
 import (
 	"bytes"
 	"context"
-	"github.com/BenjaminB64/fullstack-test/back/jobservice/domain"
+	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/config"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/logger"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/validator"
@@ -60,11 +60,11 @@ func (s *HttpTestSuite) SetupSuite() {
 }
 
 func (s *HttpTestSuite) TestCreateJob() {
-	s.jobServiceMock.Mock.On("CreateJob", mock.Anything, "Test Job", domain.JobTaskType_Weather).Return(&domain.Job{
+	s.jobServiceMock.Mock.On("CreateJob", mock.Anything, "Test Job", commonDomain.JobTaskType_Weather).Return(&commonDomain.Job{
 		ID:           1,
 		Name:         "Test Job",
-		Status:       domain.JobStatus_Pending,
-		TaskType:     domain.JobTaskType_Weather,
+		Status:       commonDomain.JobStatus_Pending,
+		TaskType:     commonDomain.JobTaskType_Weather,
 		Weather:      nil,
 		BridgeStatus: nil,
 		CreatedAt:    time.Now(),
@@ -90,12 +90,12 @@ func (s *HttpTestSuite) TestCreateJobInvalid() {
 }
 
 func (s *HttpTestSuite) TestGetJobs() {
-	s.jobServiceMock.Mock.On("ListJobs", mock.Anything).Return([]*domain.Job{
+	s.jobServiceMock.Mock.On("ListJobs", mock.Anything).Return([]*commonDomain.Job{
 		{
 			ID:           1,
 			Name:         "Test Job",
-			Status:       domain.JobStatus_Pending,
-			TaskType:     domain.JobTaskType_Weather,
+			Status:       commonDomain.JobStatus_Pending,
+			TaskType:     commonDomain.JobTaskType_Weather,
 			Weather:      nil,
 			BridgeStatus: nil,
 			CreatedAt:    time.Now(),
@@ -105,8 +105,8 @@ func (s *HttpTestSuite) TestGetJobs() {
 		{
 			ID:           2,
 			Name:         "Test Job 2",
-			Status:       domain.JobStatus_Completed,
-			TaskType:     domain.JobTaskType_GetChabanDelmasBridgeStatus,
+			Status:       commonDomain.JobStatus_Completed,
+			TaskType:     commonDomain.JobTaskType_GetChabanDelmasBridgeStatus,
 			Weather:      nil,
 			BridgeStatus: nil,
 			CreatedAt:    time.Now(),
@@ -124,11 +124,11 @@ func (s *HttpTestSuite) TestGetJobs() {
 }
 
 func (s *HttpTestSuite) TestGetJob() {
-	s.jobServiceMock.Mock.On("ReadJob", mock.Anything, 1).Return(&domain.Job{
+	s.jobServiceMock.Mock.On("ReadJob", mock.Anything, 1).Return(&commonDomain.Job{
 		ID:           1,
 		Name:         "Test Job",
-		Status:       domain.JobStatus_Pending,
-		TaskType:     domain.JobTaskType_Weather,
+		Status:       commonDomain.JobStatus_Pending,
+		TaskType:     commonDomain.JobTaskType_Weather,
 		Weather:      nil,
 		BridgeStatus: nil,
 		CreatedAt:    time.Now(),
@@ -145,7 +145,7 @@ func (s *HttpTestSuite) TestGetJob() {
 }
 
 func (s *HttpTestSuite) TestUpdateJob() {
-	s.jobServiceMock.Mock.On("UpdateJob", mock.Anything, mock.Anything).Return(&domain.Job{}, nil)
+	s.jobServiceMock.Mock.On("UpdateJob", mock.Anything, mock.Anything).Return(&commonDomain.Job{}, nil)
 
 	req, _ := http.NewRequest(http.MethodPut, "/jobs/1", bytes.NewBuffer([]byte(`{"name":"Updated Job","taskType":"get_weather","status":"pending"}`)))
 	resp := httptest.NewRecorder()

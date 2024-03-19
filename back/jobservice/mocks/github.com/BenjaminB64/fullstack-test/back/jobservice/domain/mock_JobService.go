@@ -5,7 +5,8 @@ package domain
 import (
 	context "context"
 
-	domain "github.com/BenjaminB64/fullstack-test/back/jobservice/domain"
+	domain "github.com/BenjaminB64/fullstack-test/back/common/domain"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -125,6 +126,64 @@ func (_c *MockJobService_DeleteJob_Call) Return(_a0 error) *MockJobService_Delet
 }
 
 func (_c *MockJobService_DeleteJob_Call) RunAndReturn(run func(context.Context, int) error) *MockJobService_DeleteJob_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetJobToProcess provides a mock function with given fields: ctx
+func (_m *MockJobService) GetJobToProcess(ctx context.Context) ([]*domain.Job, error) {
+	ret := _m.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetJobToProcess")
+	}
+
+	var r0 []*domain.Job
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) ([]*domain.Job, error)); ok {
+		return rf(ctx)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) []*domain.Job); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*domain.Job)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockJobService_GetJobToProcess_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetJobToProcess'
+type MockJobService_GetJobToProcess_Call struct {
+	*mock.Call
+}
+
+// GetJobToProcess is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MockJobService_Expecter) GetJobToProcess(ctx interface{}) *MockJobService_GetJobToProcess_Call {
+	return &MockJobService_GetJobToProcess_Call{Call: _e.mock.On("GetJobToProcess", ctx)}
+}
+
+func (_c *MockJobService_GetJobToProcess_Call) Run(run func(ctx context.Context)) *MockJobService_GetJobToProcess_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockJobService_GetJobToProcess_Call) Return(_a0 []*domain.Job, _a1 error) *MockJobService_GetJobToProcess_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockJobService_GetJobToProcess_Call) RunAndReturn(run func(context.Context) ([]*domain.Job, error)) *MockJobService_GetJobToProcess_Call {
 	_c.Call.Return(run)
 	return _c
 }

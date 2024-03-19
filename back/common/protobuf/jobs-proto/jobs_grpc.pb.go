@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	JobService_GetJobToProcess_FullMethodName = "/jobs.JobService/GetJobToProcess"
+	JobService_GetPendingJobs_FullMethodName  = "/jobs.JobService/GetPendingJobs"
 	JobService_UpdateJobStatus_FullMethodName = "/jobs.JobService/UpdateJobStatus"
 )
 
@@ -27,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JobServiceClient interface {
-	GetJobToProcess(ctx context.Context, in *GetJobToProcessRequest, opts ...grpc.CallOption) (*GetJobToProcessResponse, error)
+	GetPendingJobs(ctx context.Context, in *GetPendingJobsRequest, opts ...grpc.CallOption) (*GetPendingJobsResponse, error)
 	UpdateJobStatus(ctx context.Context, in *UpdateJobStatusRequest, opts ...grpc.CallOption) (*UpdateJobStatusResponse, error)
 }
 
@@ -39,9 +39,9 @@ func NewJobServiceClient(cc grpc.ClientConnInterface) JobServiceClient {
 	return &jobServiceClient{cc}
 }
 
-func (c *jobServiceClient) GetJobToProcess(ctx context.Context, in *GetJobToProcessRequest, opts ...grpc.CallOption) (*GetJobToProcessResponse, error) {
-	out := new(GetJobToProcessResponse)
-	err := c.cc.Invoke(ctx, JobService_GetJobToProcess_FullMethodName, in, out, opts...)
+func (c *jobServiceClient) GetPendingJobs(ctx context.Context, in *GetPendingJobsRequest, opts ...grpc.CallOption) (*GetPendingJobsResponse, error) {
+	out := new(GetPendingJobsResponse)
+	err := c.cc.Invoke(ctx, JobService_GetPendingJobs_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (c *jobServiceClient) UpdateJobStatus(ctx context.Context, in *UpdateJobSta
 // All implementations must embed UnimplementedJobServiceServer
 // for forward compatibility
 type JobServiceServer interface {
-	GetJobToProcess(context.Context, *GetJobToProcessRequest) (*GetJobToProcessResponse, error)
+	GetPendingJobs(context.Context, *GetPendingJobsRequest) (*GetPendingJobsResponse, error)
 	UpdateJobStatus(context.Context, *UpdateJobStatusRequest) (*UpdateJobStatusResponse, error)
 	mustEmbedUnimplementedJobServiceServer()
 }
@@ -70,8 +70,8 @@ type JobServiceServer interface {
 type UnimplementedJobServiceServer struct {
 }
 
-func (UnimplementedJobServiceServer) GetJobToProcess(context.Context, *GetJobToProcessRequest) (*GetJobToProcessResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetJobToProcess not implemented")
+func (UnimplementedJobServiceServer) GetPendingJobs(context.Context, *GetPendingJobsRequest) (*GetPendingJobsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPendingJobs not implemented")
 }
 func (UnimplementedJobServiceServer) UpdateJobStatus(context.Context, *UpdateJobStatusRequest) (*UpdateJobStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateJobStatus not implemented")
@@ -89,20 +89,20 @@ func RegisterJobServiceServer(s grpc.ServiceRegistrar, srv JobServiceServer) {
 	s.RegisterService(&JobService_ServiceDesc, srv)
 }
 
-func _JobService_GetJobToProcess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetJobToProcessRequest)
+func _JobService_GetPendingJobs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPendingJobsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(JobServiceServer).GetJobToProcess(ctx, in)
+		return srv.(JobServiceServer).GetPendingJobs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: JobService_GetJobToProcess_FullMethodName,
+		FullMethod: JobService_GetPendingJobs_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JobServiceServer).GetJobToProcess(ctx, req.(*GetJobToProcessRequest))
+		return srv.(JobServiceServer).GetPendingJobs(ctx, req.(*GetPendingJobsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -133,8 +133,8 @@ var JobService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*JobServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetJobToProcess",
-			Handler:    _JobService_GetJobToProcess_Handler,
+			MethodName: "GetPendingJobs",
+			Handler:    _JobService_GetPendingJobs_Handler,
 		},
 		{
 			MethodName: "UpdateJobStatus",
