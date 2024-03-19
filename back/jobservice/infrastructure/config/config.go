@@ -16,6 +16,9 @@ type Config struct {
 		User     string `koanf:"user"`
 		Password string `koanf:"password"`
 	} `koanf:"database"`
+	GRPCServer struct {
+		Port int `koanf:"port"`
+	}
 	App struct {
 		Port    int        `koanf:"port"`
 		Verbose slog.Level `koanf:"verbose"`

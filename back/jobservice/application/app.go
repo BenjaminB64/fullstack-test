@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/config"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/database"
+	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/grpc_server"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/http_server"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/logger"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/repository"
@@ -16,6 +17,7 @@ type Application struct {
 	logger     *logger.Logger
 	httpServer http_server.HTTPServerInterface
 	db         *database.DB
+	grpcServer *grpc_server.GrpcServer
 }
 
 func NewApplication(
@@ -52,35 +54,76 @@ func NewApplication(
 	jobHandlers, _ := http_server.NewJobHandlers(l, jobService, customValidator)
 
 	httpServer := http_server.NewHTTPServer(ctx, l, c, jobHandlers)
+	grpcServer := grpc_server.NewGrpcServer(l, c, jobService)
 
 	return &Application{
 		logger:     l,
 		httpServer: httpServer,
 		db:         db,
+		grpcServer: grpcServer,
 	}, nil
 }
 
 func (app *Application) Run(ctx context.Context) error {
 	app.logger.Info("job service is running")
 
-	wg := sync.WaitGroup{}
-	wg.Add(1)
+	var cancelFn context.CancelCauseFunc
+	ctx, cancelFn = context.WithCancelCause(ctx)
 
+	wg := sync.WaitGroup{}
+
+	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		<-ctx.Done()
-		err := app.Stop()
+		err := app.RunGRPCServer(ctx)
 		if err != nil {
-			app.logger.Error("error stopping job service application", "error", err)
+			app.logger.Error("error running grpc server", "error", err)
+			cancelFn(err)
 		}
 	}()
 
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err := app.RunHTTPServer(ctx)
+		if err != nil {
+			app.logger.Error("error running http server", "error", err)
+			cancelFn(err)
+		}
+	}()
+
+	<-ctx.Done()
+	err := app.Stop()
+	if err != nil {
+		if ctx.Err() != nil {
+			return errors.Join(ctx.Err(), err)
+		}
+		return err
+	}
+	wg.Wait()
+
+	if ctx.Err() != nil && !errors.Is(ctx.Err(), context.Canceled) {
+		return ctx.Err()
+	}
+
+	return nil
+}
+
+func (app *Application) RunHTTPServer(ctx context.Context) error {
 	err := app.httpServer.Run(ctx)
 	if err != nil {
 		return errors.Join(errors.New("start http server error"), err)
 	}
+	return nil
+}
 
-	wg.Wait()
+func (app *Application) RunGRPCServer(ctx context.Context) error {
+	app.logger.Info("job service grpc server is running")
+
+	err := app.grpcServer.Run()
+	if err != nil {
+		return errors.Join(errors.New("start grpc server error"), err)
+	}
 
 	return nil
 }
@@ -91,6 +134,11 @@ func (app *Application) Stop() error {
 	err := app.httpServer.Shutdown()
 	if err != nil {
 		return errors.Join(errors.New("stop http server error"), err)
+	}
+
+	err = app.grpcServer.Stop()
+	if err != nil {
+		return errors.Join(errors.New("stop grpc server error"), err)
 	}
 
 	err = app.db.Close()
