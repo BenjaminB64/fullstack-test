@@ -10,7 +10,7 @@ There is a service "jobservice" to which you can send a job to be processed. The
 There is a service "jobprocessor" that will process the jobs asynchronously. The jobprocessor will call the "weather" and "bridge" services to get the information and then send the result to the "jobservice".
 
 # REST API
-See the swagger file
+See the swagger file (back/jobservice/docs/swagger.json) for the REST API documentation.
 
 # Run the services
 You can run the services using the following commands:
@@ -18,8 +18,9 @@ You can run the services using the following commands:
 ```bash
 docker compose up
 ```
+and then you can access the front-end at http://localhost:3000
 
-A database will be created and populated with some data.
+The database is automatically created and populated with the necessary schema.
 
 # Generate swagger documentation
 You can generate the swagger documentation using the following command:
