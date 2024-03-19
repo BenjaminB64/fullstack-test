@@ -7,6 +7,7 @@ import (
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/config"
 	config2 "github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/config"
 	"github.com/BenjaminB64/fullstack-test/back/jobservice/infrastructure/logger"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	sloggin "github.com/samber/slog-gin"
 	"log/slog"
@@ -49,6 +50,12 @@ func NewHTTPServer(
 	if config.App.Mode == config2.AppMode_Test {
 		gin.SetMode(gin.TestMode)
 	}
+	r.Use(cors.New(cors.Config{
+		AllowAllOrigins:     true,
+		AllowMethods:        []string{"GET", "POST", "PUT", "DELETE"},
+		AllowPrivateNetwork: true,
+		AllowHeaders:        []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+	}))
 
 	gin.DefaultWriter = logger.Writer(ctx, slog.LevelInfo, "gin")
 	gin.DefaultErrorWriter = logger.Writer(ctx, slog.LevelError, "gin")

@@ -33,6 +33,11 @@ func NewApplication(
 		l.Error("error pinging database", "error", err)
 		return nil, err
 	}
+	err = db.EnsureSchema(ctx)
+	if err != nil {
+		l.Error("error ensuring schema exists", "error", err)
+		return nil, err
+	}
 
 	var customValidator *validator.Validator
 	customValidator, err = validator.NewValidator()

@@ -74,7 +74,10 @@ func (h *JobHandlers) CreateJob(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, job)
+	res := &dtos.JobResponse{}
+	res.FromDomain(job)
+
+	c.JSON(http.StatusCreated, res)
 }
 
 // GetJobs godoc
