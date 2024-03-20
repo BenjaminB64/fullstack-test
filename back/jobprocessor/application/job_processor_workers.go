@@ -5,6 +5,7 @@ import (
 	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/logger"
+	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/weather_service"
 	"sync"
 )
 
@@ -14,18 +15,21 @@ type JobProcessorWorkers struct {
 	ctx              context.Context
 	logger           *logger.Logger
 	jobServiceClient domain.JobServiceClient
+	weatherService   *weather_service.WeatherService
 }
 
 func NewJobProcessorWorkers(
 	logger *logger.Logger,
 	jobChannel <-chan *commonDomain.Job,
 	jobServiceClient domain.JobServiceClient,
+	weatherService *weather_service.WeatherService,
 ) *JobProcessorWorkers {
 	return &JobProcessorWorkers{
 		wg:               &sync.WaitGroup{},
 		jobChannel:       jobChannel,
 		logger:           logger,
 		jobServiceClient: jobServiceClient,
+		weatherService:   weatherService,
 	}
 }
 
@@ -61,6 +65,14 @@ func (j *JobProcessorWorkers) RunWorker() {
 }
 
 func (j *JobProcessorWorkers) ProcessJob(ctx context.Context, job *commonDomain.Job) error {
+	switch job.TaskType {
+	case commonDomain.JobTaskType_Weather:
+		weather, err := j.weatherService.GetWeather()
+		if err != nil {
+			return err
+		}
+		j.logger.Info("got weather", "weather", weather)
+	}
 	err := j.jobServiceClient.UpdateJobStatus(ctx, job.ID, commonDomain.JobStatus_Completed)
 	if err != nil {
 		return err
