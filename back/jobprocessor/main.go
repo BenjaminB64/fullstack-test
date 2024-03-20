@@ -5,6 +5,7 @@ import (
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/config"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/grpc_client"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/logger"
+	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/weather_service"
 	"log"
 	"log/slog"
 	"os/signal"
@@ -45,7 +46,9 @@ func main() {
 		l.Error("error creating job service client", "error", err)
 		return
 	}
-	jobProcessor := application.NewJobProcessor(jobServiceClient, l)
+	weatherService := weather_service.NewWeatherService(l)
+
+	jobProcessor := application.NewJobProcessor(jobServiceClient, l, weatherService)
 
 	var app *application.Application
 	app, err = application.NewApplication(l, c, ctx, jobProcessor)
