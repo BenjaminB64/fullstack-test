@@ -5,24 +5,28 @@ import (
 	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/logger"
-	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/weather_service"
 	"sync"
 )
 
 type JobProcessorWorkers struct {
-	wg               *sync.WaitGroup
-	jobChannel       <-chan *commonDomain.Job
-	ctx              context.Context
-	logger           *logger.Logger
+	logger *logger.Logger
+	ctx    context.Context
+
+	wg         *sync.WaitGroup
+	jobChannel <-chan *commonDomain.Job
+
 	jobServiceClient domain.JobServiceClient
-	weatherService   *weather_service.WeatherService
+
+	weatherService domain.WeatherService
+	bridgeService  domain.BridgeService
 }
 
 func NewJobProcessorWorkers(
 	logger *logger.Logger,
 	jobChannel <-chan *commonDomain.Job,
 	jobServiceClient domain.JobServiceClient,
-	weatherService *weather_service.WeatherService,
+	weatherService domain.WeatherService,
+	bridgeService domain.BridgeService,
 ) *JobProcessorWorkers {
 	return &JobProcessorWorkers{
 		wg:               &sync.WaitGroup{},
@@ -30,6 +34,7 @@ func NewJobProcessorWorkers(
 		logger:           logger,
 		jobServiceClient: jobServiceClient,
 		weatherService:   weatherService,
+		bridgeService:    bridgeService,
 	}
 }
 
@@ -71,11 +76,21 @@ func (j *JobProcessorWorkers) ProcessJob(ctx context.Context, job *commonDomain.
 		if err != nil {
 			return err
 		}
-		j.logger.Info("got weather", "weather", weather)
-	}
-	err := j.jobServiceClient.UpdateJobStatus(ctx, job.ID, commonDomain.JobStatus_Completed)
-	if err != nil {
-		return err
+		j.logger.Debug("got weather", "weather", weather)
+		err = j.jobServiceClient.UpdateWeatherJob(ctx, job.ID, commonDomain.JobStatus_Completed, weather)
+		if err != nil {
+			return err
+		}
+	case commonDomain.JobTaskType_GetChabanDelmasBridgeSchedule:
+		bridgeSchedule, err := j.bridgeService.GetBridgeSchedule()
+		if err != nil {
+			return err
+		}
+		j.logger.Debug("got bridge schedule", "bridgeSchedule", bridgeSchedule)
+		err = j.jobServiceClient.UpdateBridgeJob(ctx, job.ID, commonDomain.JobStatus_Completed, bridgeSchedule)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

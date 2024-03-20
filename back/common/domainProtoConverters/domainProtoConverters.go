@@ -18,8 +18,8 @@ func DomainTaskTypeToGRPCTaskType(taskType domain.JobTaskType) jobs_proto.JobTyp
 	switch taskType {
 	case domain.JobTaskType_Weather:
 		return jobs_proto.JobType_JOB_TYPE_GET_WEATHER
-	case domain.JobTaskType_GetChabanDelmasBridgeStatus:
-		return jobs_proto.JobType_JOB_TYPE_GET_CHABAN_DELMAS_BRIDGE_STATUS
+	case domain.JobTaskType_GetChabanDelmasBridgeSchedule:
+		return jobs_proto.JobType_JOB_TYPE_GET_CHABAN_DELMAS_BRIDGE_SCHEDULE
 	default:
 		return jobs_proto.JobType_JOB_TYPE_UNKNOWN
 	}
@@ -52,8 +52,8 @@ func GrpcTypeToDomainType(taskType jobs_proto.JobType) domain.JobTaskType {
 	switch taskType {
 	case jobs_proto.JobType_JOB_TYPE_GET_WEATHER:
 		return domain.JobTaskType_Weather
-	case jobs_proto.JobType_JOB_TYPE_GET_CHABAN_DELMAS_BRIDGE_STATUS:
-		return domain.JobTaskType_GetChabanDelmasBridgeStatus
+	case jobs_proto.JobType_JOB_TYPE_GET_CHABAN_DELMAS_BRIDGE_SCHEDULE:
+		return domain.JobTaskType_GetChabanDelmasBridgeSchedule
 	default:
 		return domain.JobTaskType_Unknown
 	}
@@ -71,5 +71,27 @@ func GrpcStatusToDomainStatus(status jobs_proto.JobStatus) domain.JobStatus {
 		return domain.JobStatus_Failed
 	default:
 		return domain.JobStatus_Unknown
+	}
+}
+
+func GrpcBridgeScheduleToBridgeJobResult(bs *jobs_proto.BridgeSchedule) []*domain.ChabanDelmasBridgeJobResult {
+	bridgeSchedule := make([]*domain.ChabanDelmasBridgeJobResult, len(bs.Closures))
+
+	for i, closure := range bs.Closures {
+		bridgeSchedule[i] = &domain.ChabanDelmasBridgeJobResult{
+			BoatName:   closure.BoatName,
+			CloseTime:  closure.CloseTime.AsTime(),
+			ReopenTime: closure.ReopenTime.AsTime(),
+		}
+	}
+
+	return bridgeSchedule
+}
+
+func GrpcWeatherToWeatherJobResult(weather *jobs_proto.Weather) *domain.WeatherJobResult {
+	return &domain.WeatherJobResult{
+		Temperature:      float32(weather.Temperature),
+		RelativeHumidity: weather.RelativeHumidity,
+		WeatherWmoCode:   int(weather.WmoCode),
 	}
 }

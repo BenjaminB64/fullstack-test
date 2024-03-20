@@ -9,8 +9,9 @@ type ChabanDelmasBridgeJobResult struct {
 	ID    int `json:"id"`
 	JobID int `json:"job_id"`
 
-	CloseTime time.Time `json:"close_time"`
-	OpenTime  time.Time `json:"open_time"`
+	BoatName   string    `json:"boat_name"`
+	CloseTime  time.Time `json:"close_time"`
+	ReopenTime time.Time `json:"reopen_time"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt null.Time `json:"updated_at"`

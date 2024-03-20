@@ -7,5 +7,7 @@ import (
 
 type JobServiceClient interface {
 	GetPendingJobs(ctx context.Context) ([]*commonDomain.Job, error)
-	UpdateJobStatus(ctx context.Context, jobID int, status commonDomain.JobStatus) error
+
+	UpdateBridgeJob(ctx context.Context, jobID int, status commonDomain.JobStatus, bridgeSchedule *BridgeSchedule) error
+	UpdateWeatherJob(ctx context.Context, jobID int, status commonDomain.JobStatus, weather *Weather) error
 }

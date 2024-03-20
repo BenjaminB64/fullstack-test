@@ -101,7 +101,7 @@ func NewHTTPServer(
 	return httpServer
 }
 
-func (s *HTTPServer) Run(ctx context.Context) error {
+func (s *HTTPServer) Run(_ context.Context) error {
 	s.logger.Info("http server listening", "bindAddr", s.server.Addr)
 
 	err := s.server.ListenAndServe()

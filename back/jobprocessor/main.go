@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/bridge_service"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/config"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/grpc_client"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/logger"
@@ -47,8 +48,9 @@ func main() {
 		return
 	}
 	weatherService := weather_service.NewWeatherService(l)
+	bridgeService := bridge_service.NewBridgeService(l)
 
-	jobProcessor := application.NewJobProcessor(jobServiceClient, l, weatherService)
+	jobProcessor := application.NewJobProcessor(jobServiceClient, l, weatherService, bridgeService)
 
 	var app *application.Application
 	app, err = application.NewApplication(l, c, ctx, jobProcessor)

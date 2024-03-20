@@ -1,7 +1,7 @@
 package domain
 
 type WeatherService interface {
-	GetWeather() (Weather, error)
+	GetWeather() (*Weather, error)
 }
 
 // value object

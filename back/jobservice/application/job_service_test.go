@@ -60,7 +60,12 @@ func (s *JobServiceTestSuite) TestCreateJob() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
+	newJob := &commonDomain.Job{
+		Name:     "test",
+		TaskType: commonDomain.JobTaskType_Weather,
+	}
+
+	job, err := s.JobService.CreateJob(ctx, newJob)
 	s.NoError(err)
 	s.NotNil(job)
 	s.NotEqual(0, job.ID)
@@ -76,7 +81,12 @@ func (s *JobServiceTestSuite) TestCreateJobInvalidTaskType() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", "invalid_type")
+	newJob := &commonDomain.Job{
+		Name:     "test",
+		TaskType: "invalid_type",
+	}
+
+	job, err := s.JobService.CreateJob(ctx, newJob)
 	s.ErrorIs(err, domain.ErrJobInvalidTaskType)
 	s.Nil(job)
 }
@@ -85,7 +95,12 @@ func (s *JobServiceTestSuite) TestReadJob() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
+	newJob := &commonDomain.Job{
+		Name:     "test",
+		TaskType: commonDomain.JobTaskType_Weather,
+	}
+
+	job, err := s.JobService.CreateJob(ctx, newJob)
 	s.NoError(err)
 	s.NotNil(job)
 
@@ -115,7 +130,12 @@ func (s *JobServiceTestSuite) TestUpdateJob() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
+	newJob := &commonDomain.Job{
+		Name:     "test",
+		TaskType: commonDomain.JobTaskType_Weather,
+	}
+
+	job, err := s.JobService.CreateJob(ctx, newJob)
 	s.NoError(err)
 	s.NotNil(job)
 
@@ -134,7 +154,11 @@ func (s *JobServiceTestSuite) TestUpdateJobInvalidStatus() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
+	newJob := &commonDomain.Job{
+		Name:     "test",
+		TaskType: commonDomain.JobTaskType_Weather,
+	}
+	job, err := s.JobService.CreateJob(ctx, newJob)
 	s.NoError(err)
 	s.NotNil(job)
 
@@ -158,7 +182,12 @@ func (s *JobServiceTestSuite) TestDeleteJob() {
 	ctx, cancelFn := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancelFn()
 
-	job, err := s.JobService.CreateJob(ctx, "test", commonDomain.JobTaskType_Weather)
+	newJob := &commonDomain.Job{
+		Name:     "test",
+		TaskType: commonDomain.JobTaskType_Weather,
+	}
+
+	job, err := s.JobService.CreateJob(ctx, newJob)
 	s.NoError(err)
 	s.NotNil(job)
 

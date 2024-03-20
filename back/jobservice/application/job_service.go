@@ -16,11 +16,10 @@ func NewJobService(jobRepository domain.JobRepository) domain.JobService {
 	}
 }
 
-func (s *JobService) CreateJob(ctx context.Context, name string, taskType commonDomain.JobTaskType) (*commonDomain.Job, error) {
-	if !taskType.IsValid() {
+func (s *JobService) CreateJob(ctx context.Context, job *commonDomain.Job) (*commonDomain.Job, error) {
+	if !job.TaskType.IsValid() {
 		return nil, domain.ErrJobInvalidTaskType
 	}
-	job := commonDomain.NewJob(name, taskType)
 
 	return s.jobRepository.Create(ctx, job)
 }
@@ -50,4 +49,12 @@ func (s *JobService) ListJobs(ctx context.Context) ([]*commonDomain.Job, error) 
 
 func (s *JobService) GetJobToProcess(ctx context.Context) ([]*commonDomain.Job, error) {
 	return s.jobRepository.GetJobToProcess(ctx)
+}
+
+func (s *JobService) CreateWeatherJobResult(ctx context.Context, jobID int, weather *commonDomain.WeatherJobResult) error {
+	return s.jobRepository.CreateWeatherJobResult(ctx, jobID, weather)
+}
+
+func (s *JobService) CreateBridgeJobResult(ctx context.Context, jobID int, bridgeSchedule []*commonDomain.ChabanDelmasBridgeJobResult) error {
+	return s.jobRepository.CreateBridgeJobResult(ctx, jobID, bridgeSchedule)
 }

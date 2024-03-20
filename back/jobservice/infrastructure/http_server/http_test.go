@@ -61,15 +61,15 @@ func (s *HttpTestSuite) SetupSuite() {
 
 func (s *HttpTestSuite) TestCreateJob() {
 	s.jobServiceMock.Mock.On("CreateJob", mock.Anything, "Test Job", commonDomain.JobTaskType_Weather).Return(&commonDomain.Job{
-		ID:           1,
-		Name:         "Test Job",
-		Status:       commonDomain.JobStatus_Pending,
-		TaskType:     commonDomain.JobTaskType_Weather,
-		Weather:      nil,
-		BridgeStatus: nil,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    null.Time{},
-		DeletedAt:    null.Time{},
+		ID:             1,
+		Name:           "Test Job",
+		Status:         commonDomain.JobStatus_Pending,
+		TaskType:       commonDomain.JobTaskType_Weather,
+		Weather:        nil,
+		BridgeSchedule: nil,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      null.Time{},
+		DeletedAt:      null.Time{},
 	}, nil)
 
 	req, _ := http.NewRequest(http.MethodPost, "/jobs", bytes.NewBuffer([]byte(`{"name":"Test Job","taskType":"get_weather"}`)))
@@ -92,26 +92,26 @@ func (s *HttpTestSuite) TestCreateJobInvalid() {
 func (s *HttpTestSuite) TestGetJobs() {
 	s.jobServiceMock.Mock.On("ListJobs", mock.Anything).Return([]*commonDomain.Job{
 		{
-			ID:           1,
-			Name:         "Test Job",
-			Status:       commonDomain.JobStatus_Pending,
-			TaskType:     commonDomain.JobTaskType_Weather,
-			Weather:      nil,
-			BridgeStatus: nil,
-			CreatedAt:    time.Now(),
-			UpdatedAt:    null.Time{},
-			DeletedAt:    null.Time{},
+			ID:             1,
+			Name:           "Test Job",
+			Status:         commonDomain.JobStatus_Pending,
+			TaskType:       commonDomain.JobTaskType_Weather,
+			Weather:        nil,
+			BridgeSchedule: nil,
+			CreatedAt:      time.Now(),
+			UpdatedAt:      null.Time{},
+			DeletedAt:      null.Time{},
 		},
 		{
-			ID:           2,
-			Name:         "Test Job 2",
-			Status:       commonDomain.JobStatus_Completed,
-			TaskType:     commonDomain.JobTaskType_GetChabanDelmasBridgeStatus,
-			Weather:      nil,
-			BridgeStatus: nil,
-			CreatedAt:    time.Now(),
-			UpdatedAt:    null.Time{},
-			DeletedAt:    null.Time{},
+			ID:             2,
+			Name:           "Test Job 2",
+			Status:         commonDomain.JobStatus_Completed,
+			TaskType:       commonDomain.JobTaskType_GetChabanDelmasBridgeSchedule,
+			Weather:        nil,
+			BridgeSchedule: nil,
+			CreatedAt:      time.Now(),
+			UpdatedAt:      null.Time{},
+			DeletedAt:      null.Time{},
 		},
 	}, nil)
 
@@ -125,15 +125,15 @@ func (s *HttpTestSuite) TestGetJobs() {
 
 func (s *HttpTestSuite) TestGetJob() {
 	s.jobServiceMock.Mock.On("ReadJob", mock.Anything, 1).Return(&commonDomain.Job{
-		ID:           1,
-		Name:         "Test Job",
-		Status:       commonDomain.JobStatus_Pending,
-		TaskType:     commonDomain.JobTaskType_Weather,
-		Weather:      nil,
-		BridgeStatus: nil,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    null.Time{},
-		DeletedAt:    null.Time{},
+		ID:             1,
+		Name:           "Test Job",
+		Status:         commonDomain.JobStatus_Pending,
+		TaskType:       commonDomain.JobTaskType_Weather,
+		Weather:        nil,
+		BridgeSchedule: nil,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      null.Time{},
+		DeletedAt:      null.Time{},
 	}, nil)
 
 	req, _ := http.NewRequest(http.MethodGet, "/jobs/1", nil)

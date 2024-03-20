@@ -18,9 +18,9 @@
  * @export
  */
 export const DtosTaskType = {
-    JobTaskType_Unknown: '',
-    JobTaskType_Weather: 'get_weather',
-    JobTaskType_GetChabanDelmasBridgeStatus: 'get_chaban_delmas_bridge_status'
+    TaskType_Unknown: '',
+    TaskType_Weather: 'get_weather',
+    TaskType_GetChabanDelmasBridgeSchedule: 'get_chaban_delmas_bridge_schedule'
 } as const;
 export type DtosTaskType = typeof DtosTaskType[keyof typeof DtosTaskType];
 

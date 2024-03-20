@@ -8,7 +8,7 @@ option go_package = "github.com/BenjaminB64/fullstack-test/back/jobservice/proto
 
 service JobService {
   rpc GetPendingJobs(GetPendingJobsRequest) returns (GetPendingJobsResponse) {}
-  rpc UpdateJobStatus(UpdateJobStatusRequest) returns (UpdateJobStatusResponse) {}
+  rpc UpdateJob(UpdateJobRequest) returns (UpdateJobResponse) {}
 }
 
 message GetPendingJobsRequest {}
@@ -22,15 +22,20 @@ message Localisation {
   float longitude = 2;
 }
 
-message UpdateJobStatusRequest {
-  Job job = 1;
+message UpdateJobRequest {
+  int32 id = 1;
+
+  JobStatus status = 2;
+  JobResult result = 3;
 }
 
-message UpdateJobStatusResponse {}
+message UpdateJobResponse {}
 
 message JobResult {
-  Weather weather = 1;
-  repeated BridgeStatus bridgeStatus = 2;
+  oneof result_oneof {
+    Weather weather = 1;
+    BridgeSchedule bridge_schedule = 2;
+  }
 }
 
 message Weather {
@@ -39,9 +44,14 @@ message Weather {
   int32 wmoCode = 3;
 }
 
-message BridgeStatus {
-  google.protobuf.Timestamp closingTime = 1;
-  google.protobuf.Timestamp openingTime = 2;
+message BridgeSchedule {
+  repeated BridgeClosure closures = 1;
+}
+
+message BridgeClosure {
+  string boat_name = 3;
+  google.protobuf.Timestamp close_time = 1;
+  google.protobuf.Timestamp reopen_time = 2;
 }
 
 message Job {
@@ -53,7 +63,7 @@ message Job {
 
 enum JobType {
   JOB_TYPE_UNKNOWN = 0;
-  JOB_TYPE_GET_CHABAN_DELMAS_BRIDGE_STATUS = 1;
+  JOB_TYPE_GET_CHABAN_DELMAS_BRIDGE_SCHEDULE = 1;
   JOB_TYPE_GET_WEATHER = 2;
 }
 

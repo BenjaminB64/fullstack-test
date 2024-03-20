@@ -33,7 +33,7 @@ import {
  */
 export interface DtosUpdateJobRequest {
     /**
-     * in: body
+     * 
      * @type {string}
      * @memberof DtosUpdateJobRequest
      */

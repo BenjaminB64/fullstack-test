@@ -6,13 +6,14 @@ import (
 )
 
 type Job struct {
-	ID       int         `json:"id"`
-	Name     string      `json:"name"`
-	Status   JobStatus   `json:"status"`
-	TaskType JobTaskType `json:"task_type"`
+	ID              int         `json:"id"`
+	Name            string      `json:"name"`
+	Status          JobStatus   `json:"status"`
+	TaskType        JobTaskType `json:"task_type"`
+	SlackWebhookURL null.String `json:"slack_webhook_url"`
 
-	Weather      *WeatherJobResult             `json:"weather"`
-	BridgeStatus []ChabanDelmasBridgeJobResult `json:"bridge_status"`
+	Weather        *WeatherJobResult              `json:"weather"`
+	BridgeSchedule []*ChabanDelmasBridgeJobResult `json:"bridge_status"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt null.Time `json:"updated_at"`

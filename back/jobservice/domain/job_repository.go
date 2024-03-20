@@ -12,4 +12,6 @@ type JobRepository interface {
 	Delete(ctx context.Context, id int) error
 	ReadLastN(ctx context.Context, n int) ([]*commonDomain.Job, error)
 	GetJobToProcess(ctx context.Context) ([]*commonDomain.Job, error)
+	CreateWeatherJobResult(ctx context.Context, jobID int, weather *commonDomain.WeatherJobResult) error
+	CreateBridgeJobResult(ctx context.Context, jobID int, bridgeSchedule []*commonDomain.ChabanDelmasBridgeJobResult) error
 }

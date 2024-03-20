@@ -14,11 +14,7 @@ type WeatherService struct {
 	logger     *logger.Logger
 }
 
-// 44.8333 et la longitude de la ville de Bordeaux est -0.5667
-
 // NewWeatherService creates a new WeatherService
-// GetWeather() (Weather, error) return a Weather get from
-
 func NewWeatherService(logger *logger.Logger) *WeatherService {
 	httpClient := &http.Client{}
 	httpClient.Timeout = 10 * time.Second
@@ -28,13 +24,11 @@ func NewWeatherService(logger *logger.Logger) *WeatherService {
 }
 
 func (ws *WeatherService) GetWeather() (*domain.Weather, error) {
-	// get from openmeteo
 	get, err := ws.httpClient.Get("https://api.open-meteo.com/v1/forecast" + "?latitude=44.8333&longitude=-0.5667&current=temperature_2m,relative_humidity_2m,weather_code")
 	if err != nil {
 		return nil, err
 	}
 	defer get.Body.Close()
-	// parse response
 
 	if get.StatusCode != http.StatusOK {
 		ws.logger.Error("error getting weather", "status", get.StatusCode)
@@ -53,7 +47,6 @@ func (ws *WeatherService) GetWeather() (*domain.Weather, error) {
 		WeatherWmoCode:   response.Current.WeatherCode,
 	}
 
-	// return weather
 	return weather, nil
 }
 

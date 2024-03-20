@@ -53,7 +53,6 @@ export const JobFormContainer = forwardRef<HTMLFormElement, JobFormContainerProp
 
             let error = "unknown error occurred. Please try again later.";
             if (e instanceof ResponseError) {
-                setError(e.message);
                 const apiError = DtosApiErrorFromJSON(await e.response.json());
                 if (apiError.fields) {
                     setErrors({

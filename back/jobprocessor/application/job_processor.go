@@ -6,7 +6,6 @@ import (
 	commonDomain "github.com/BenjaminB64/fullstack-test/back/common/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/domain"
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/logger"
-	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/weather_service"
 	"time"
 )
 
@@ -15,17 +14,20 @@ type JobProcessor struct {
 	jobServiceClient    domain.JobServiceClient
 	jobChannel          chan *commonDomain.Job
 	logger              *logger.Logger
-	weatherService      *weather_service.WeatherService
 }
 
-func NewJobProcessor(jobServiceClient domain.JobServiceClient, logger *logger.Logger, weatherService *weather_service.WeatherService) domain.JobProcessor {
+func NewJobProcessor(
+	jobServiceClient domain.JobServiceClient,
+	logger *logger.Logger,
+	weatherService domain.WeatherService,
+	bridgeService domain.BridgeService,
+) domain.JobProcessor {
 	jobChannel := make(chan *commonDomain.Job, 10)
 	return &JobProcessor{
 		jobServiceClient:    jobServiceClient,
 		jobChannel:          jobChannel,
-		jobProcessorWorkers: NewJobProcessorWorkers(logger, jobChannel, jobServiceClient, weatherService),
+		jobProcessorWorkers: NewJobProcessorWorkers(logger, jobChannel, jobServiceClient, weatherService, bridgeService),
 		logger:              logger,
-		weatherService:      weatherService,
 	}
 }
 
