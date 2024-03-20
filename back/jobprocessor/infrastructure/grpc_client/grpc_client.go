@@ -11,6 +11,7 @@ import (
 	"github.com/BenjaminB64/fullstack-test/back/jobprocessor/infrastructure/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type JobServiceClient struct {
@@ -52,12 +53,52 @@ func (j JobServiceClient) GetPendingJobs(ctx context.Context) ([]*commonDomain.J
 	return domainJobs, nil
 }
 
-func (j JobServiceClient) UpdateJobStatus(ctx context.Context, jobID int, status commonDomain.JobStatus) error {
-	_, err := j.client.UpdateJobStatus(ctx, &jobsproto.UpdateJobStatusRequest{
-		Job: &jobsproto.Job{
-			Id:     int32(jobID),
-			Status: domainProtoConverters.DomainStatusToGRPCStatus(status),
+// UpdateBridgeJob updates the status of a get bridge schedule job in the job service
+func (j JobServiceClient) UpdateBridgeJob(ctx context.Context, jobID int, status commonDomain.JobStatus, bridgeSchedule *domain.BridgeSchedule) error {
+	_, err := j.client.UpdateJob(ctx, &jobsproto.UpdateJobRequest{
+		Id:     int32(jobID),
+		Status: domainProtoConverters.DomainStatusToGRPCStatus(status),
+		Result: &jobsproto.JobResult{
+			ResultOneof: &jobsproto.JobResult_BridgeSchedule{
+				BridgeSchedule: bridgeScheduleToGRPCBridgeSchedule(bridgeSchedule),
+			},
 		},
 	})
 	return err
+}
+
+// UpdateWeatherJob updates the status of a weather job in the job service
+func (j JobServiceClient) UpdateWeatherJob(ctx context.Context, jobID int, status commonDomain.JobStatus, weather *domain.Weather) error {
+	_, err := j.client.UpdateJob(ctx, &jobsproto.UpdateJobRequest{
+		Id:     int32(jobID),
+		Status: domainProtoConverters.DomainStatusToGRPCStatus(status),
+		Result: &jobsproto.JobResult{
+			ResultOneof: &jobsproto.JobResult_Weather{
+				Weather: weatherToGRPCWeather(weather),
+			},
+		},
+	})
+	return err
+}
+
+func bridgeScheduleToGRPCBridgeSchedule(bridgeSchedule *domain.BridgeSchedule) *jobsproto.BridgeSchedule {
+	bs := &jobsproto.BridgeSchedule{}
+	bs.Closures = make([]*jobsproto.BridgeClosure, len(bridgeSchedule.Closures))
+	for i, closure := range bridgeSchedule.Closures {
+		bs.Closures[i] = &jobsproto.BridgeClosure{
+			BoatName:   closure.BoatName,
+			CloseTime:  timestamppb.New(closure.CloseTime),
+			ReopenTime: timestamppb.New(closure.ReopenTime),
+		}
+	}
+
+	return bs
+}
+
+func weatherToGRPCWeather(weather *domain.Weather) *jobsproto.Weather {
+	return &jobsproto.Weather{
+		RelativeHumidity: float32(weather.RelativeHumidity),
+		Temperature:      int32(weather.Temperature),
+		WmoCode:          int32(weather.WeatherWmoCode),
+	}
 }

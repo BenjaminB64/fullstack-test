@@ -18,11 +18,11 @@
  * @export
  */
 export const DtosStatus = {
-    JobStatus_Unknown: '',
-    JobStatus_Pending: 'pending',
-    JobStatus_InProgress: 'in_progress',
-    JobStatus_Completed: 'completed',
-    JobStatus_Failed: 'failed'
+    Status_Unknown: '',
+    Status_Pending: 'pending',
+    Status_InProgress: 'in_progress',
+    Status_Completed: 'completed',
+    Status_Failed: 'failed'
 } as const;
 export type DtosStatus = typeof DtosStatus[keyof typeof DtosStatus];
 

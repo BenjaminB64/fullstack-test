@@ -6,15 +6,15 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 
 const statusColorMap: Map<string,  "success" | "warning" | "secondary" | "default" | "primary" | "danger" | undefined> = new Map();
-statusColorMap.set(DtosStatus.JobStatus_Completed, "success");
-statusColorMap.set(DtosStatus.JobStatus_Failed, "danger");
-statusColorMap.set(DtosStatus.JobStatus_InProgress, "warning");
-statusColorMap.set(DtosStatus.JobStatus_Pending, "secondary");
-statusColorMap.set(DtosStatus.JobStatus_Unknown, "secondary");
+statusColorMap.set(DtosStatus.Status_Completed, "success");
+statusColorMap.set(DtosStatus.Status_Failed, "danger");
+statusColorMap.set(DtosStatus.Status_InProgress, "warning");
+statusColorMap.set(DtosStatus.Status_Pending, "secondary");
+statusColorMap.set(DtosStatus.Status_Unknown, "secondary");
 
 const taskTypeMap: Map<string, string> = new Map();
-taskTypeMap.set(DtosTaskType.JobTaskType_Weather, "Get Weather");
-taskTypeMap.set(DtosTaskType.JobTaskType_GetChabanDelmasBridgeStatus, "Get Pont Chaban Delmas closing times");
+taskTypeMap.set(DtosTaskType.TaskType_Weather, "Get Weather");
+taskTypeMap.set(DtosTaskType.TaskType_GetChabanDelmasBridgeSchedule, "Get Pont Chaban Delmas schedule");
 
 const dateFormater = new Intl.DateTimeFormat(["en-US", "fr-FR"], {
     year: "numeric",
@@ -62,7 +62,7 @@ function JobTable() {
                     <TableColumn>Create Date</TableColumn>
                     <TableColumn>Slack Webhook</TableColumn>
                 </TableHeader>
-                <TableBody emptyContent={"No job to display"}>
+                <TableBody isLoading={status === "loading"} emptyContent={"No job to display"}>
                     {
                         (jobs || []).map((job, index) => {
                             return (
@@ -75,7 +75,7 @@ function JobTable() {
                                         </Chip>
                                     </TableCell>
                                     <TableCell>{dateFormater.format(Date.parse(job.createdAt!))}</TableCell>
-                                    <TableCell>{job.slackWebhook}</TableCell>
+                                    <TableCell><div className="text-sm max-w-72 overflow-auto">{job.slackWebhook}</div></TableCell>
                                 </TableRow>
                             )
                         })

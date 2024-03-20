@@ -47,7 +47,7 @@ const JobForm = forwardRef<HTMLFormElement, CreateJobFormProps>(({handleSubmit, 
                 isInvalid={!!errors?.type}
             >
                 <SelectItem key={TaskType.GetWeather}>Get weather</SelectItem>
-                <SelectItem key={TaskType.GetPontChaban}>Get Pont Chaman Delmas closing times</SelectItem>
+                <SelectItem key={TaskType.GetPontChabanSchedule}>Get Pont Chaman Delmas schedule</SelectItem>
             </Select>
 
             <Input

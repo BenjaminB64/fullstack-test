@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	validator2 "github.com/go-playground/validator/v10"
+	"github.com/volatiletech/null"
 	"net/http"
 )
 
@@ -65,8 +66,16 @@ func (h *JobHandlers) CreateJob(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, apiError)
 		return
 	}
-	var job *commonDomain.Job
-	job, err = h.jobService.CreateJob(c, createJobRequest.Name, commonDomain.JobTaskType(createJobRequest.TaskType))
+	job := &commonDomain.Job{}
+
+	job.Name = createJobRequest.Name
+	job.TaskType = commonDomain.JobTaskType(createJobRequest.TaskType)
+
+	if createJobRequest.SlackWebhook != "" {
+		job.SlackWebhookURL = null.StringFrom(createJobRequest.SlackWebhook)
+	}
+
+	job, err = h.jobService.CreateJob(c, job)
 	if err != nil {
 		h.logger.Error("failed to create job", "error", err)
 		c.JSON(http.StatusInternalServerError, &dtos.ApiError{
@@ -200,8 +209,8 @@ func (h *JobHandlers) UpdateJob(c *gin.Context) {
 
 	job.ID = updateJobURI.ID
 	job.Name = updateJobRequest.Name
-	job.TaskType = updateJobRequest.TaskType
-	job.Status = updateJobRequest.Status
+	job.TaskType = commonDomain.JobTaskType(updateJobRequest.TaskType)
+	job.Status = commonDomain.JobStatus(updateJobRequest.Status)
 
 	_, err = h.jobService.UpdateJob(c, job)
 	if err != nil {

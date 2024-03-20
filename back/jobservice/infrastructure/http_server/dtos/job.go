@@ -7,7 +7,6 @@ import (
 )
 
 // data transfer objects
-
 type CreateJobRequest struct {
 	TaskType     TaskType `json:"taskType" binding:"required,enum"`
 	Name         string   `json:"name" binding:"required,max=255"`
@@ -29,15 +28,13 @@ type JobResponse struct {
 }
 
 type UpdateJobRequest struct {
-	// in: body
 	Name     string   `json:"name" validate:"required,max=255"`
 	TaskType TaskType `json:"taskType" validate:"required,enum"`
 	Status   Status   `json:"status" validate:"required,enum"`
 }
 
-type TaskType = commonDomain.JobTaskType
-type Status = commonDomain.JobStatus
-
+// FromDomain converts a domain Job to a JobResponse
+// we assume that taskType and status are same as in commonDomain
 func (jr *JobResponse) FromDomain(job *commonDomain.Job) {
 	if job == nil || jr == nil {
 		return
@@ -46,10 +43,10 @@ func (jr *JobResponse) FromDomain(job *commonDomain.Job) {
 		ID: job.ID,
 
 		Name:     job.Name,
-		TaskType: job.TaskType,
-		Status:   job.Status,
+		TaskType: TaskType(job.TaskType),
+		Status:   Status(job.Status),
 
-		SlackWebhook: null.String{},
+		SlackWebhook: job.SlackWebhookURL,
 
 		CreatedAt: job.CreatedAt,
 		UpdatedAt: job.UpdatedAt,
@@ -77,3 +74,43 @@ type IdJobURI struct {
 type GetJobURI = IdJobURI
 type DeleteJobURI = IdJobURI
 type UpdateJobURI = IdJobURI
+
+/*
+swag cli doesn't support workspace, so it can't handle the following types
+type TaskType = commonDomain.JobTaskType
+type Status = commonDomain.JobStatus
+*/
+
+type TaskType string
+
+const (
+	TaskType_Unknown                       TaskType = ""
+	TaskType_Weather                       TaskType = "get_weather"
+	TaskType_GetChabanDelmasBridgeSchedule TaskType = "get_chaban_delmas_bridge_schedule"
+)
+
+func (j TaskType) IsValid() bool {
+	switch j {
+	case TaskType_Weather, TaskType_GetChabanDelmasBridgeSchedule:
+		return true
+	}
+	return false
+}
+
+type Status string
+
+const (
+	Status_Unknown    Status = ""
+	Status_Pending    Status = "pending"
+	Status_InProgress Status = "in_progress"
+	Status_Completed  Status = "completed"
+	Status_Failed     Status = "failed"
+)
+
+func (j Status) IsValid() bool {
+	switch j {
+	case Status_Pending, Status_InProgress, Status_Completed, Status_Failed:
+		return true
+	}
+	return false
+}

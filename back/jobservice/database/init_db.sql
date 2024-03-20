@@ -2,9 +2,11 @@ create schema if not exists public;
 
 create table if not exists jobs (
   id serial primary key,
+
   name varchar(255) not null,
   status varchar(50) not null check (status in ('pending', 'in_progress', 'completed', 'failed')) default 'pending',
-  task_type varchar(50) not null check (task_type in ('get_chaban_delmas_bridge_status', 'get_weather')),
+  task_type varchar(50) not null check (task_type in ('get_chaban_delmas_bridge_schedule', 'get_weather')),
+  slack_webhook_url varchar(255) null,
 
   created_at timestamp without time zone not null default current_timestamp,
   updated_at timestamp without time zone null default null,
@@ -31,8 +33,9 @@ create table if not exists chaban_delmas_bridge_job_results (
   id serial primary key,
   job_id integer not null references jobs(id),
 
-  close_time timestamp without time zone not null,
-  open_time timestamp without time zone not null,
+  boat_name varchar(255) not null,
+  closure_time timestamp without time zone not null,
+  reopen_time timestamp without time zone not null,
 
   created_at timestamp without time zone not null default current_timestamp,
   updated_at timestamp without time zone null default null,
