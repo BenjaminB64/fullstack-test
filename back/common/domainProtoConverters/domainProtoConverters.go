@@ -42,8 +42,20 @@ func DomainStatusToGRPCStatus(status domain.JobStatus) jobs_proto.JobStatus {
 
 func GrpcJobToDomainJob(job *jobs_proto.Job) *domain.Job {
 	return &domain.Job{
-		ID:     int(job.Id),
-		Status: GrpcStatusToDomainStatus(job.Status),
+		ID:       int(job.Id),
+		Status:   GrpcStatusToDomainStatus(job.Status),
+		TaskType: GrpcTypeToDomainType(job.Type),
+	}
+}
+
+func GrpcTypeToDomainType(taskType jobs_proto.JobType) domain.JobTaskType {
+	switch taskType {
+	case jobs_proto.JobType_JOB_TYPE_GET_WEATHER:
+		return domain.JobTaskType_Weather
+	case jobs_proto.JobType_JOB_TYPE_GET_CHABAN_DELMAS_BRIDGE_STATUS:
+		return domain.JobTaskType_GetChabanDelmasBridgeStatus
+	default:
+		return domain.JobTaskType_Unknown
 	}
 }
 
