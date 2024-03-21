@@ -13,10 +13,11 @@ There is a service "jobprocessor" that will process the jobs asynchronously. The
 See the swagger file (back/jobservice/docs/swagger.json) for the REST API documentation.
 
 # Setup .env
-If you want to use docker-compose, just copy the template.env file to .env
+If you want to use docker-compose, just copy template.env files to .env
     
 ```bash
 cp ./back/jobservice/template.env ./back/jobservice/.env
+cp ./back/jobprocessor/template.env ./back/jobprocessor/.env
 ```
 
 # Run the services
